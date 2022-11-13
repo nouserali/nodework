@@ -7,6 +7,9 @@ const app = express()
 app.use(express.json())
 connectDB();
 app.use(Auth)
-app.listen(4000,(request,response) =>{
-	console.log("Yes your server connected with PORT:4000");
+app.listen(process.env.PORT || 4000,(request,response) =>{
+    console.log("Yes your server connected with PORT:3002");
 })
+// app.listen(4000,(request,response) =>{
+// 	console.log("Yes your server connected with PORT:4000");
+// })
