@@ -88,7 +88,7 @@ export const login = async (req, res) => {
 }
 
 export const OtpVerify = async (req, res) => {
-    const checkOtp = await User.findOne({email:req.body.email,otp:req.body.otp})
+    const checkOtp = await User.findOne({otp:req.body.otp})
     const checkEmail = await User.findOne({email:req.body.email})
     if(checkEmail){
     if(checkOtp){
@@ -116,6 +116,86 @@ export const OtpVerify = async (req, res) => {
          });return; 
     }
 }
+
+export const ResendOtp = async(req,res) =>{
+    console.log('req',req)
+    try{
+       var otp = Math.floor(1000 + Math.random() * 9000);
+       req.body.otp = otp;
+       const data = await User.findOneAndUpdate({email:req.body.email},req.body)
+       if(data){
+          res.send({
+             status:true,
+             msg:"Otp resend successfully.",
+             data:{otp}
+          })
+       }else{
+          res.send({
+             status:false,
+             msg:"data not found with given id",
+             data:{}
+          })
+       }
+    }catch(err){
+       res.send({
+          status:false,
+          msg:"Something went wrong with request.",
+          data:{}
+       })
+    }
+}
+export const ForgotPassword = async(req,res) =>{
+    console.log('req',req)
+    try{
+       var otp = Math.floor(1000 + Math.random() * 9000);
+       req.body.otp = otp;
+       const data = await User.findOneAndUpdate({email:req.body.email},req.body)
+       if(data){
+          res.send({
+             status:true,
+             msg:"Otp resend successfully.",
+             data:{otp}
+          })
+       }else{
+          res.send({
+             status:false,
+             msg:"Email not Exist",
+             data:{}
+          })
+       }
+    }catch(err){
+       res.send({
+          status:false,
+          msg:"Something went wrong with request.",
+          data:{}
+       })
+    }
+}
+
+export const ResetPassword = async(req,res) =>{
+    const checkUserExist = await User.findOne({email:req.body.email})
+    console.log("checkUserExist++++++++",checkUserExist)
+    if(checkUserExist){
+             var dataToBeUpdate = {};
+             const passwordHash = await bcrypt.hash(req.body.password,10)
+             dataToBeUpdate.password = passwordHash;
+             await User.findByIdAndUpdate({_id:checkUserExist._id},dataToBeUpdate)
+          res.send({
+             status:true,
+             msg:"Password Reset Succesfully",
+             data:checkUserExist
+          })
+      
+    }else{
+       res.send({
+          status:false,
+          msg:"User not found with given ID.",
+          data:{}
+       });return;
+    }
+ }
+
+ 
 
 
 
